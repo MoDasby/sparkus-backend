@@ -10,5 +10,5 @@ public class FileResponseDto {
 
     private String id;
     private String name;
-    private String downloadUrl;
+    private String path;
 }

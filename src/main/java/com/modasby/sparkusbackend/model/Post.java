@@ -20,10 +20,8 @@ public class Post {
     @Column(name = "post_id", columnDefinition = "VARCHAR(255)")
     private String id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 500)
     private String text;
-
-    private String imageUrl;
 
     private int likes = 0;
 

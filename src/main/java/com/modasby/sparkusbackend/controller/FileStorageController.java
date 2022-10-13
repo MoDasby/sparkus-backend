@@ -32,7 +32,7 @@ public class FileStorageController {
     }
 
     @PostMapping("/upload")
-    public FileResponseDto saveFile(@RequestParam MultipartFile file) {
-        return fileStorageService.saveImage(file);
+    public ResponseEntity<FileResponseDto> saveFile(@RequestParam MultipartFile file) {
+        return ResponseEntity.ok(fileStorageService.saveImage(file));
     }
 }

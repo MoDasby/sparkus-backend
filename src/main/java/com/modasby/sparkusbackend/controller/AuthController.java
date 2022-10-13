@@ -3,6 +3,7 @@ package com.modasby.sparkusbackend.controller;
 import com.modasby.sparkusbackend.dto.Auth.AuthRequest;
 import com.modasby.sparkusbackend.dto.Auth.AuthResponse;
 import com.modasby.sparkusbackend.dto.User.UserDto;
+import com.modasby.sparkusbackend.dto.User.UserResponseDto;
 import com.modasby.sparkusbackend.service.AuthService;
 import com.modasby.sparkusbackend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +38,7 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> addUser(@RequestBody UserDto user) {
+    public ResponseEntity<UserResponseDto> addUser(@RequestBody UserDto user) {
         return ResponseEntity.ok(userService.addUser(user));
     }
 
