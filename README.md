@@ -1,93 +1,22 @@
-# Sparkus - Backend
+# Sparkus
 
-## Sobre
+Uma api para uma rede social criada como parte de um aprendizado em desenvolvimento backend utilizando Java. O objetivo principal desse projeto é aprender conceitos do backend como manipulação de dados, segurança, autenticação e autorização
 
-API feita para a rede social [sparkus](https://github.com/MoDasby/sparkus/)
+## Stack
+- Java
+- Spring boot
+- MySQL
 
-## Tipos
+## Funcionalidades
 
-### UserDetails
+- Gerenciamento de usuários: Cadastro e login
+- Publicações: Criação e leitura de postagens
+- Interação social: Curtidas, Seguidores
+- Segurança: Autenticação e autorização de usuários, proteção contra ataques comuns.
 
-| Body   | Tipo      | Descrição                           |
-| :---------- |:----------| :---------------------------------- |
-| `username` | string    | Nome de Usuário|
-| `name` | string    | Nome |
-| `iconPath` | string    | Link da foto de perfil |
-
-### User
-
-| Body   | Tipo      | Descrição                           |
-| :---------- |:----------| :---------------------------------- |
-| `username` | string    | Nome de Usuário|
-| `name` | string    | Nome |
-| `iconPath` | string    | Link da foto de perfil |
-| `email` | string    | Email do usuário |
-| `password` | string    | Senha do usuário |
-
-### Post
-
-| Body   | Tipo      | Descrição                           |
-| :---------- |:----------| :---------------------------------- |
-| `text` | string    | Texto do post |
-| `authorUsername` | string    | Nome de usuário do autor do post |
-
-## Rotas
-
-Todas as rotas tem o prefixo /api
-
-### [POST] /auth - faz login no sistema
-
-JSON de solicitação:
-
-| Body   | Tipo      | Descrição                           |
-| :---------- |:----------| :---------------------------------- |
-| `credential` | string    | Email ou Nome de Usuário|
-| `password` | string    | Senha|
-
-JSON de resposta:
-
-| Body   | Tipo      | Descrição                           |
-| :---------- |:----------| :---------------------------------- |
-| `token` | string    | Token JWT usado para autenticação|
-| `user` | [UserDetails](#userdetails)    | Dados do usuário (nome, foto etc)|
-
-### [POST] /auth/signup - usado para criar uma conta
-
-JSON de solicitação:
-
-| Body   | Tipo      | Descrição                           |
-| :---------- |:----------| :---------------------------------- |
-| `user` | [User](#user)    | Dados do usuário, incluindo senha e email
-
-### [GET] /feed - retorna o feed do usuário
-
-JSON de resposta:
-
-| Body   | Tipo      | Descrição                           |
-| :---------- |:----------| :---------------------------------- |
-| `newUsers` | Array de [UserDetails](#userdetails)    | Dados do usuário (nome, foto etc)
- `posts` | Array de [Post](#post)    | Dados do post (texto e autor)
-
-### [POST] /feed/post - faz um novo post
-
-JSON de solicitação:
-
-| Body   | Tipo      | Descrição                           |
-| :---------- |:----------| :---------------------------------- |
-| `Objeto` | [Post](#post)    | Dados do post (texto e autor)
-
-### [GET] /search/{usuário} - busca contas pelo nome de usuário
-
-JSON de resposta:
-
-| Body   | Tipo      | Descrição                           |
-| :---------- |:----------| :---------------------------------- |
-| `Array` | Array de [UserDetails](#userdetails)    | Dados do usuário (nome, foto etc)
-
-### [GET] /userDetails/{username} - retorna dados de uma conta
-
-JSON de resposta:
-
-| Body   | Tipo      | Descrição                           |
-| :---------- |:----------| :---------------------------------- |
-| `Objeto` | [UserDetails](#userdetails)    | Dados do usuário (nome, foto etc)
+## Instalação e Uso
+- Clone o repositório do Sparkus.
+- Certifique-se de ter o Java JDK, o MySQL e alguma IDE Java instalada no seu sistema
+- Na IDE importe o projeto como um projeto Maven e instale as depedências
+- Configure as credenciais do banco de dados no arquivo application.properties.
+- Pronto, basta executar o projeto
