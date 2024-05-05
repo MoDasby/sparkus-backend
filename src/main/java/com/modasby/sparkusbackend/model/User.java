@@ -5,13 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Entity @NoArgsConstructor @AllArgsConstructor @Getter @Setter
 @Table(name = "users")
@@ -28,7 +26,6 @@ public class User{
     @Id
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "org.hibernate.id.UUIDGenerator")
-    @Column(columnDefinition = "VARCHAR(255)")
     private String id;
 
     @Column(nullable = false, unique = true)
@@ -45,12 +42,28 @@ public class User{
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false)
+    @CreationTimestamp
     private Date creationDate;
 
     @OneToMany(mappedBy = "author", fetch = FetchType.EAGER)
-    private List<Post> posts;
+    private List<Post> posts = new ArrayList<>();
 
     @OneToMany
-    private List<Post> likedPosts;
+    private List<Post> likedPosts = new ArrayList<>();
+
+    @OneToMany
+    private List<User> following = new ArrayList<>();
+
+    @OneToMany
+    private List<User> followers = new ArrayList<>();
+
+    @Override
+    public boolean equals (Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        User user = (User) o;
+
+        return id.equals(user.id) || username.equals(user.username);
+    }
 }

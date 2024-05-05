@@ -32,6 +32,5 @@ public class PostResponseDto {
         this.text = post.getText();
         this.likes = post.getLikes();
         this.author = new UserResponseDto(post.getAuthor());
-        this.isLiked = false;
     }
 }
