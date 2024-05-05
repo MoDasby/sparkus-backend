@@ -41,8 +41,8 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
     public void handleUsernameNotFoundException() {
     }
 
-    @ExceptionHandler(UserOrEmailAlreadyExists.class)
-    public ResponseEntity<ExceptionResponse> handleUserOrEmailAlreadyExists(UserOrEmailAlreadyExists e, WebRequest request) {
+    @ExceptionHandler(UserOrEmailAlreadyExistsException.class)
+    public ResponseEntity<ExceptionResponse> handleUserOrEmailAlreadyExists(UserOrEmailAlreadyExistsException e, WebRequest request) {
         ExceptionResponse response = new ExceptionResponse(e.getMessage(), request.getDescription(false), new Date());
 
         return new ResponseEntity<>(response, HttpStatus.CONFLICT);
