@@ -3,13 +3,10 @@ package com.modasby.sparkusbackend.dto.Post;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.modasby.sparkusbackend.dto.User.UserResponseDto;
 import com.modasby.sparkusbackend.model.Post;
-import com.modasby.sparkusbackend.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.List;
 
 @AllArgsConstructor @NoArgsConstructor @Getter @Setter
 public class PostResponseDto {
