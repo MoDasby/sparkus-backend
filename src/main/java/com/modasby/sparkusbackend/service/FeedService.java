@@ -2,16 +2,15 @@ package com.modasby.sparkusbackend.service;
 
 import com.modasby.sparkusbackend.config.JwtTokenUtil;
 import com.modasby.sparkusbackend.dto.Feed.FeedResponseDto;
-import com.modasby.sparkusbackend.dto.Post.PostDto;
 import com.modasby.sparkusbackend.dto.Post.PostResponseDto;
 import com.modasby.sparkusbackend.dto.User.UserResponseDto;
 import com.modasby.sparkusbackend.model.Post;
 import com.modasby.sparkusbackend.model.User;
 import com.modasby.sparkusbackend.repository.PostRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -49,20 +48,5 @@ public class FeedService {
                 newUsers.stream().map(UserResponseDto::new).collect(Collectors.toList()),
                 feedPosts.stream().map(p -> new PostResponseDto(p, isLiked.apply(p))).collect(Collectors.toList())
         );
-    }
-
-    public PostResponseDto addPost(PostDto postDto, String tokenHeader) {
-
-        String token = tokenHeader.substring(7);
-        String authorCredential = jwtTokenUtil.getCredentialFromToken(token);
-
-        Post post = new Post(postDto);
-
-        User user = userService.findByUsername(authorCredential);
-
-        post.setCreationDate(new Date());
-        post.setAuthor(user);
-
-        return new PostResponseDto(postRepository.save(post));
     }
 }
