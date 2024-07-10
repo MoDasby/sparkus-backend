@@ -1,14 +1,14 @@
 package com.modasby.sparkusbackend.model;
 
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.*;
-
-@Entity@AllArgsConstructor @NoArgsConstructor @Getter @Setter
+@Entity
+@AllArgsConstructor @NoArgsConstructor @Getter @Setter
 @Table(name = "images")
 public class File {
 
