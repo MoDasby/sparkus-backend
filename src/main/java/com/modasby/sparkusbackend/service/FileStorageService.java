@@ -1,6 +1,7 @@
 package com.modasby.sparkusbackend.service;
 
 import com.modasby.sparkusbackend.dto.File.FileResponseDto;
+import com.modasby.sparkusbackend.exception.EntityNotFoundException;
 import com.modasby.sparkusbackend.model.File;
 import com.modasby.sparkusbackend.repository.FileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +51,6 @@ public class FileStorageService {
 
     public File getFile(String id) {
 
-        return fileRepository.findById(id).get();
+        return fileRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("file not found"));
     }
 }

@@ -1,6 +1,5 @@
 package com.modasby.sparkusbackend.service;
 
-import com.modasby.sparkusbackend.config.JwtTokenUtil;
 import com.modasby.sparkusbackend.dto.Feed.FeedResponseDto;
 import com.modasby.sparkusbackend.dto.Post.PostResponseDto;
 import com.modasby.sparkusbackend.dto.User.UserResponseDto;
@@ -22,24 +21,17 @@ public class FeedService {
 
     private final UserService userService;
 
-    private final JwtTokenUtil jwtTokenUtil;
-
     @Autowired
     public FeedService(PostRepository postRepository,
-                       UserService userService,
-                       JwtTokenUtil jwtTokenUtil) {
+                       UserService userService) {
         this.postRepository = postRepository;
         this.userService = userService;
-        this.jwtTokenUtil = jwtTokenUtil;
     }
 
-    public FeedResponseDto getFeed(String tokenHeader) {
+    public FeedResponseDto getFeed(String username) {
         List<Post> feedPosts = postRepository.findByOrderByCreationDateDesc();
 
-        String token = tokenHeader.substring(7);
-        String authorCredential = jwtTokenUtil.getCredentialFromToken(token);
-
-        User user = userService.findByUsername(authorCredential);
+        User user = userService.findByUsername(username);
         Function<Post, Boolean> isLiked = (p) -> user.getLikedPosts().contains(p);
 
         List<User> newUsers = userService.findNewUsers();

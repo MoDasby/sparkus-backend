@@ -1,6 +1,5 @@
 package com.modasby.sparkusbackend.service;
 
-import com.modasby.sparkusbackend.config.JwtTokenUtil;
 import com.modasby.sparkusbackend.dto.Post.PostDto;
 import com.modasby.sparkusbackend.dto.Post.PostResponseDto;
 import com.modasby.sparkusbackend.exception.EntityNotFoundException;
@@ -8,6 +7,8 @@ import com.modasby.sparkusbackend.model.Post;
 import com.modasby.sparkusbackend.model.User;
 import com.modasby.sparkusbackend.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,21 +17,21 @@ import java.util.List;
 public class PostService {
 
     private final PostRepository postRepository;
-
-    private final JwtTokenUtil jwtTokenUtil;
-
     private final UserService userService;
 
     @Autowired
-    public PostService(PostRepository postRepository, JwtTokenUtil jwtTokenUtil, UserService userService) {
+    public PostService(PostRepository postRepository, UserService userService) {
         this.postRepository = postRepository;
-        this.jwtTokenUtil = jwtTokenUtil;
         this.userService = userService;
     }
 
-    public PostResponseDto addPost(PostDto postDto, String tokenHeader) {
+    public Page<PostResponseDto> findPostByUser(String username, Pageable pageable) {
+        return postRepository.findByAuthor_Username(username, pageable).map(PostResponseDto::new);
+    }
 
-        User user = getUserByToken(tokenHeader);
+    public PostResponseDto addPost(PostDto postDto, String username) {
+
+        User user = userService.findByUsername(username);
 
         Post post = new Post(postDto);
 
@@ -39,10 +40,10 @@ public class PostService {
         return new PostResponseDto(postRepository.save(post), false);
     }
 
-    public void addLike(String postId, String token) {
+    public void addLike(String postId, String username) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new EntityNotFoundException("Post não encontrado"));
 
-        User user = getUserByToken(token);
+        User user = userService.findByUsername(username);
 
         List<Post> likedPosts = user.getLikedPosts();
 
@@ -58,10 +59,10 @@ public class PostService {
         userService.save(user);
     }
 
-    public void removeLike(String postId, String token) {
+    public void removeLike(String postId, String username) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new EntityNotFoundException("Post não encontrado"));
 
-        User user = getUserByToken(token);
+        User user = userService.findByUsername(username);
 
         List<Post> likedPosts = user.getLikedPosts();
 
@@ -73,11 +74,5 @@ public class PostService {
 
             postRepository.save(post);
         }
-    }
-
-    private User getUserByToken(String token) {
-        String authorCredential = jwtTokenUtil.getCredentialFromToken(token.substring(7));
-
-        return userService.findByUsername(authorCredential);
     }
 }

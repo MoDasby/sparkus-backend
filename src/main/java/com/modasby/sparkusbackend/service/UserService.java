@@ -1,6 +1,5 @@
 package com.modasby.sparkusbackend.service;
 
-import com.modasby.sparkusbackend.config.JwtTokenUtil;
 import com.modasby.sparkusbackend.dto.Post.PostResponseDto;
 import com.modasby.sparkusbackend.dto.User.UserDto;
 import com.modasby.sparkusbackend.dto.User.UserResponseDto;
@@ -24,13 +23,11 @@ import java.util.stream.Collectors;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final JwtTokenUtil jwtTokenUtil;
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserService(UserRepository userRepository, JwtTokenUtil jwtTokenUtil, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
-        this.jwtTokenUtil = jwtTokenUtil;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -50,10 +47,10 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public UserDetailsResponseDto getUserDetails(String username, String token) {
+    public UserDetailsResponseDto getUserDetails(String username, String searcherUsername) {
         User user = this.findByUsername(username);
 
-        User user1 = getUserByToken(token);
+        User user1 = this.findByUsername(searcherUsername);
 
         return new UserDetailsResponseDto(user, user.getFollowers().contains(user1));
     }
@@ -63,11 +60,7 @@ public class UserService {
     }
 
     public User findByEmail(String email) {
-        if (userRepository.existsByEmail(email)) {
-            return userRepository.findByEmail(email);
-        } else {
-            throw new EntityNotFoundException("email nao encontrado");
-        }
+        return userRepository.findByEmail(email).orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
     }
 
     public List<User> findNewUsers() {
@@ -81,8 +74,8 @@ public class UserService {
         return users.stream().map(UserResponseDto::new).collect(Collectors.toList());
     }
 
-    public void follow(String username, String token) {
-        User user = getUserByToken(token);
+    public void follow(String username, String followerUsername) {
+        User user = findByUsername(followerUsername);
         User userToFollow = findByUsername(username);
 
         if (Objects.equals(user.getId(), userToFollow.getId())) {
@@ -98,8 +91,8 @@ public class UserService {
         save(userToFollow);
     }
 
-    public void stopFollow(String username, String token) {
-        User user = getUserByToken(token);
+    public void stopFollow(String username, String followerUsername) {
+        User user = findByUsername(followerUsername);
         User userToUnfollow = findByUsername(username);
 
         if (Objects.equals(user.getId(), userToUnfollow.getId())) {
@@ -145,11 +138,5 @@ public class UserService {
 
     public Boolean existsByEmail(String email) {
         return userRepository.existsByEmail(email);
-    }
-
-    private User getUserByToken(String token) {
-        String authorCredential = jwtTokenUtil.getCredentialFromToken(token.substring(7));
-
-        return findByUsername(authorCredential);
     }
 }

@@ -6,6 +6,8 @@ import com.modasby.sparkusbackend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,8 +24,11 @@ public class UserController {
     }
 
     @GetMapping("/{username}")
-    public ResponseEntity<UserDetailsResponseDto> getUserDetails(@PathVariable String username, @RequestHeader("Authorization") String tokenHeader) {
-        return ResponseEntity.ok(userService.getUserDetails(username, tokenHeader));
+    public ResponseEntity<UserDetailsResponseDto> getUserDetails(
+            @PathVariable String username,
+            @AuthenticationPrincipal UserDetails userDetails
+    ) {
+        return ResponseEntity.ok(userService.getUserDetails(username, userDetails.getUsername()));
     }
 
     @GetMapping("/{username}/likes")
@@ -32,15 +37,18 @@ public class UserController {
     }
 
     @GetMapping("/search/{term}")
-    public ResponseEntity<?> getUserByWord(@PathVariable String term) {
+    public ResponseEntity<List<UserResponseDto>> getUserByWord(@PathVariable String term) {
         return ResponseEntity.ok(userService.findUsersByTerm(term));
     }
 
     @GetMapping("/{username}/follow")
-    public ResponseEntity<Integer> follow(@PathVariable("username") String username, @RequestHeader("Authorization") String tokenHeader) {
-        userService.follow(username, tokenHeader);
+    public ResponseEntity<?> follow(
+            @PathVariable("username") String username,
+            @AuthenticationPrincipal UserDetails userDetails
+    ) {
+        userService.follow(username, userDetails.getUsername());
 
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @GetMapping("/{username}/followers")
@@ -54,9 +62,12 @@ public class UserController {
     }
 
     @GetMapping("/{username}/unfollow")
-    public ResponseEntity<Integer> stopFollow(@PathVariable("username") String username, @RequestHeader("Authorization") String tokenHeader) {
-        userService.stopFollow(username, tokenHeader);
+    public ResponseEntity<?> stopFollow(
+            @PathVariable("username") String username,
+            @AuthenticationPrincipal UserDetails userDetails
+    ) {
+        userService.stopFollow(username, userDetails.getUsername());
 
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

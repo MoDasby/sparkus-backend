@@ -30,15 +30,11 @@ public class UserDetailsResponseDto {
 
     private boolean following;
 
-    List<PostResponseDto> posts;
-
     public UserDetailsResponseDto(User user, boolean following) {
-        Function<Post, Boolean> isLiked = (p) -> user.getLikedPosts().contains(p);
 
         this.username = user.getUsername();
         this.name = user.getName();
         this.iconPath = user.getIconPath();
-        this.posts = user.getPosts().stream().map(p -> new PostResponseDto(p, isLiked.apply(p))).collect(Collectors.toList());
         this.followersCount = user.getFollowers().size();
         this.followingsCount = user.getFollowing().size();
         this.following = following;
