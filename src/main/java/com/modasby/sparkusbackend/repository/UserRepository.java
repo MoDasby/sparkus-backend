@@ -1,8 +1,6 @@
 package com.modasby.sparkusbackend.repository;
 
-import com.modasby.sparkusbackend.model.Post;
 import com.modasby.sparkusbackend.model.User;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
