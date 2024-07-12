@@ -8,6 +8,8 @@ import com.modasby.sparkusbackend.model.User;
 import com.modasby.sparkusbackend.repository.PostRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,8 +30,8 @@ public class FeedService {
         this.userService = userService;
     }
 
-    public FeedResponseDto getFeed(String username) {
-        List<Post> feedPosts = postRepository.findByOrderByCreationDateDesc();
+    public FeedResponseDto getFeed(String username, Pageable pageable) {
+        Page<Post> feedPosts = postRepository.findByOrderByCreationDateDesc(pageable);
 
         User user = userService.findByUsername(username);
         Function<Post, Boolean> isLiked = (p) -> user.getLikedPosts().contains(p);
@@ -38,7 +40,7 @@ public class FeedService {
 
         return new FeedResponseDto(
                 newUsers.stream().map(UserResponseDto::new).collect(Collectors.toList()),
-                feedPosts.stream().map(p -> new PostResponseDto(p, isLiked.apply(p))).collect(Collectors.toList())
+                feedPosts.map(p -> new PostResponseDto(p, isLiked.apply(p)))
         );
     }
 }

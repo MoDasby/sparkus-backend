@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -13,5 +14,5 @@ import java.util.List;
 public class FeedResponseDto {
 
     private List<UserResponseDto> newUsers;
-    private List<PostResponseDto> posts;
+    private Page<PostResponseDto> posts;
 }

@@ -10,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface PostRepository extends JpaRepository<Post, String> {
-        List<Post> findByOrderByCreationDateDesc();
+        Page<Post> findByOrderByCreationDateDesc(Pageable pageable);
 
         @Query("select p from Post p where p.author.username like :username")
         Page<Post> findByAuthor_Username(@Param("username") String username, Pageable pageable);

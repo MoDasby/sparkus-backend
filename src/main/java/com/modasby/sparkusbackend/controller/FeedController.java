@@ -1,7 +1,9 @@
 package com.modasby.sparkusbackend.controller;
 
+import com.modasby.sparkusbackend.dto.Feed.FeedResponseDto;
 import com.modasby.sparkusbackend.service.FeedService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,12 +21,11 @@ public class FeedController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getFeed(@AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<FeedResponseDto> getFeed(
+            @AuthenticationPrincipal UserDetails userDetails,
+            Pageable pageable
+    ) {
 
-        String username = userDetails.getUsername();
-
-        System.out.println(username);
-
-        return ResponseEntity.ok(feedService.getFeed(userDetails.getUsername()));
+        return ResponseEntity.ok(feedService.getFeed(userDetails.getUsername(), pageable));
     }
 }
