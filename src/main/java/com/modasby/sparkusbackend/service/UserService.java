@@ -63,9 +63,12 @@ public class UserService {
         return userRepository.findByEmail(email).orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
     }
 
-    public List<User> findNewUsers() {
+    public List<UserResponseDto> findNewUsers(Pageable pageable) {
 
-        return userRepository.findByOrderByCreationDateDesc(Pageable.ofSize(3));
+        return userRepository.findByOrderByCreationDateDesc(pageable)
+                .stream()
+                .map(UserResponseDto::new)
+                .collect(Collectors.toList());
     }
 
     public List<UserResponseDto> findUsersByTerm(String term) {

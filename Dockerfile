@@ -1,13 +1,13 @@
-FROM maven:3.8.4-jdk-11 as build
+FROM maven:3-eclipse-temurin-22-alpine AS build
 
 COPY src /app/src
 COPY pom.xml /app
 
 WORKDIR /app
 
-RUN mvn clean install -DskipTests
+RUN mvn package
 
-FROM eclipse-temurin:11-jre-jammy AS final
+FROM openjdk:22 AS final
 
 COPY --from=build /app/target/sparkusBackend-0.0.1-SNAPSHOT.jar /target/app.jar
 

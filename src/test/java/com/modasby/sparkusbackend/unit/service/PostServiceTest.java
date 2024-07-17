@@ -56,6 +56,8 @@ public class PostServiceTest {
     @Test
     public void testFindPostByUser() {
 
+        when(userService.findByUsername(anyString()))
+                .thenReturn(user);
         when(postRepository.findByAuthor_Username(anyString(), any(Pageable.class)))
                 .thenReturn(new PageImpl<>(posts));
 

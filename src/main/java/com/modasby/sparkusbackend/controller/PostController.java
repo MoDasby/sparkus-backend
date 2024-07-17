@@ -23,6 +23,14 @@ public class PostController {
         this.postService = postService;
     }
 
+    @GetMapping
+    public ResponseEntity<Page<PostResponseDto>> findPosts(
+            @AuthenticationPrincipal UserDetails userDetails,
+            Pageable pageable
+    ) {
+        return ResponseEntity.ok(postService.findPosts(userDetails.getUsername(), pageable));
+    }
+
     @GetMapping("/{username}")
     public ResponseEntity<Page<PostResponseDto>> findPostByUsername(
             @PathVariable String username,

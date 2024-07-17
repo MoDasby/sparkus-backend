@@ -1,7 +1,9 @@
 package com.modasby.sparkusbackend.service;
 
+import com.modasby.sparkusbackend.dto.Feed.FeedResponseDto;
 import com.modasby.sparkusbackend.dto.Post.PostDto;
 import com.modasby.sparkusbackend.dto.Post.PostResponseDto;
+import com.modasby.sparkusbackend.dto.User.UserResponseDto;
 import com.modasby.sparkusbackend.exception.EntityNotFoundException;
 import com.modasby.sparkusbackend.model.Post;
 import com.modasby.sparkusbackend.model.User;
@@ -12,6 +14,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 public class PostService {
@@ -25,8 +29,22 @@ public class PostService {
         this.userService = userService;
     }
 
+    public Page<PostResponseDto> findPosts(String username, Pageable pageable) {
+        Page<Post> feedPosts = postRepository.findByOrderByCreationDateDesc(pageable);
+
+        User user = userService.findByUsername(username);
+        Function<Post, Boolean> isLiked = (p) -> user.getLikedPosts().contains(p);
+
+        return feedPosts.map(p -> new PostResponseDto(p, isLiked.apply(p)));
+    }
+
     public Page<PostResponseDto> findPostByUser(String username, Pageable pageable) {
-        return postRepository.findByAuthor_Username(username, pageable).map(PostResponseDto::new);
+        User user = userService.findByUsername(username);
+        Function<Post, Boolean> isLiked = (p) -> user.getLikedPosts().contains(p);
+
+        return postRepository
+                .findByAuthor_Username(username, pageable)
+                .map(p -> new PostResponseDto(p, isLiked.apply(p)));
     }
 
     public PostResponseDto addPost(PostDto postDto, String username) {

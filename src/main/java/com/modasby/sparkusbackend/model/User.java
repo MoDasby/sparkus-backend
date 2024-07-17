@@ -46,7 +46,12 @@ public class User{
     @OneToMany(mappedBy = "author", fetch = FetchType.EAGER)
     private List<Post> posts = new ArrayList<>();
 
-    @OneToMany
+    @ManyToMany
+    @JoinTable(
+            name = "users_likes",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "post_id")
+    )
     private List<Post> likedPosts = new ArrayList<>();
 
     @OneToMany
